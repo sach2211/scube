@@ -1,0 +1,19 @@
+.file-tree-wrapper {
+  position: absolute;
+  top: 115px;
+  bottom: 0;
+  background-color: midnightblue;
+  color: gold;
+  width: 260px;
+  text-align: left;
+}
+.file-tree-main {
+  padding: 15px;
+  padding-left: 15px;
+}
+
+.right-arrows {
+  width: 8px;
+  margin-right: 5%;
+  vertical-align: baseline;
+}

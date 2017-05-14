@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import styles from './index.css';
+import './index.css';
 import dummy from '../data.json'
 import { parseString } from 'xml2js';
 import request from 'superagent';
-
+import rightArr from '../../right-full.png';
+import downArr from '../../down-full.png';
 
 
 class S3Explorer extends Component {
@@ -113,8 +114,7 @@ class S3Explorer extends Component {
     console.log('File Data', this.state.fileData);
     return (
       <div>
-        <div>
-          <h2>Your S3 Data</h2>
+        <div className='file-tree-wrapper'>
           <FileTree
             onFileClick={(i, e) => this.fileClickHandler(i, e)}
             fileData={this.state.fileData}/>
@@ -131,15 +131,17 @@ const FileTree = (props) => {
     return null;
   }
   return (
-    <div>
+    <div className='file-tree-main'>
       {
         Object.keys(fileData).map((thisFile, index) => (
           (thisFile !== 'view')
           ?
             <div
+              className="tree-branch"
               key={index+thisFile}
               onClick={(e) => onFileClick(thisFile, e)} > 
-              {thisFile}
+                <img src={fileData[thisFile].view == 'collapsed' ? rightArr : downArr} className="right-arrows" />
+                {thisFile}
               {
                 fileData[thisFile] ? <FileTree fileData={fileData[thisFile]} onFileClick={onFileClick}/> : null
               }
