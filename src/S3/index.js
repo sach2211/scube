@@ -56,13 +56,23 @@ class S3Explorer extends Component {
       for (var i = 0; i < thisPath.length; i++) {
         if (!current[thisPath[i]]) {
           current[thisPath[i]] = {}
-        } 
+        }
+        current[thisPath[i]].view = 'collapsed';
         current = current[thisPath[i]];
       }
     })
     console.log("File Paths", fileHierarchy);
 
-    return splitArr;
+    return fileHierarchy;
+  }
+
+  fileClickHandler(i) {
+    console.log('Click Detected', i);
+    if (this.state.fileData[i].view) {
+      let newFileData = this.state.fileData;
+      newFileData[i].view = 'expanded';
+      this.setState({fileData : newFileData});
+    }
   }
 
   render() {
@@ -71,7 +81,9 @@ class S3Explorer extends Component {
       <div>
         <div>
           <h2>Your S3 Data</h2>
-          {/*<FileTree fileData={this.state.fileData}/>*/}
+          <FileTree
+            onFileClick={(i) => this.fileClickHandler(i)}
+            fileData={this.state.fileData}/>
         </div>
       </div>
     );
@@ -79,18 +91,45 @@ class S3Explorer extends Component {
 }
 
 const FileTree = (props) => {
-  const { fileData } = props;
+  const { fileData, onFileClick } = props;
   console.log("In file tree", fileData);
+  if (fileData.view && fileData.view === 'collapsed') {
+    return null;
+  }
   return (
     <div>
       {
-        fileData.map((thisData) => (
-          <div> {thisData.Key[0]} </div>
+        Object.keys(fileData).map((thisFile, index) => (
+          (thisFile !== 'view')
+          ?
+            <div
+              key={index+thisFile}
+              onClick={() => onFileClick(thisFile)} > 
+              {thisFile}
+              {
+                (console.log('p ', fileData),
+                fileData[thisFile] ? <FileTree fileData={fileData[thisFile]} /> : null)
+              }
+            </div>
+          : 
+            null
         ))
       }
     </div>
   );
 }
+
+// const CollapsedView = (props) => {
+//   const { viewData } = props;
+//   return (
+//     <div>
+//       <ul>
+//         <li>{viewData}</li>
+//       </ul>
+//     </div>
+//   );
+// } 
+
 FileTree.prototype = {
   fileData: React.PropTypes.array
 }
