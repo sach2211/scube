@@ -17,3 +17,10 @@
   margin-right: 5%;
   vertical-align: baseline;
 }
+
+.file-view-wrapper {
+  position: absolute;
+  top: 115px;
+  left: 260px;
+  padding: 15px;
+}

@@ -14,7 +14,8 @@ class S3Explorer extends Component {
     this.state = {
       isLoading: true,
       isErrored: false,
-      fileData:[]
+      fileData:[],
+      currentFile: 'Hello !'
     }
   }
 
@@ -66,6 +67,10 @@ class S3Explorer extends Component {
 
     return fileHierarchy;
   }
+  
+  loadCurrentFile(objectName) {
+    console.log('Construct path and fetch ', objectName);
+  }
 
   toggleState(obj, key) {
     if (obj[key].view === 'collapsed'){
@@ -106,8 +111,9 @@ class S3Explorer extends Component {
 
     this.searchAndUpdate(updatedState, i);
 
-    this.setState({fileData : updatedState});
+    this.setState({fileData : updatedState, lastClick: i});
 
+    this.loadCurrentFile(i);
   }
 
   render() {
@@ -118,6 +124,9 @@ class S3Explorer extends Component {
           <FileTree
             onFileClick={(i, e) => this.fileClickHandler(i, e)}
             fileData={this.state.fileData}/>
+        </div>
+        <div className='file-view-wrapper'>
+          <FileViewArea content={this.state.currentFile}/>
         </div>
       </div>
     );
@@ -156,5 +165,15 @@ const FileTree = (props) => {
 
 FileTree.prototype = {
   fileData: React.PropTypes.array
+}
+
+const FileViewArea = (props) => {
+
+  return (
+    <div> 
+      {props.content}
+    </div>
+  )
+
 }
 export default S3Explorer;
