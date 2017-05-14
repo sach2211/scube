@@ -66,13 +66,47 @@ class S3Explorer extends Component {
     return fileHierarchy;
   }
 
-  fileClickHandler(i) {
-    console.log('Click Detected', i);
-    if (this.state.fileData[i].view) {
-      let newFileData = this.state.fileData;
-      newFileData[i].view = 'expanded';
-      this.setState({fileData : newFileData});
+  toggleState(obj, key) {
+    if (obj[key].view === 'collapsed'){
+      obj[key].view = 'expanded';
+    } else {
+      obj[key].view = 'collapsed';
     }
+  }
+
+  searchAndUpdate(obj, key) {
+    //Step: 1 => Push initital data
+    let flag;
+
+    if (!obj) {
+      return
+    }
+
+    flag = Object.keys(obj).find((thisKey) => {
+      return thisKey === key
+    });
+    if (flag) {
+      this.toggleState(obj, key);
+      return
+    }
+
+    Object.keys(obj).map((thisKey) => {
+      if (typeof obj[thisKey] == 'object'){
+        this.searchAndUpdate(obj[thisKey], key);
+      }
+    })
+    
+  }
+
+  fileClickHandler(i, e) {
+    e.stopPropagation();
+    // console.log('Click Detected', i, Object.keys(e));
+    let updatedState = this.state.fileData;
+
+    this.searchAndUpdate(updatedState, i);
+
+    this.setState({fileData : updatedState});
+
   }
 
   render() {
@@ -82,7 +116,7 @@ class S3Explorer extends Component {
         <div>
           <h2>Your S3 Data</h2>
           <FileTree
-            onFileClick={(i) => this.fileClickHandler(i)}
+            onFileClick={(i, e) => this.fileClickHandler(i, e)}
             fileData={this.state.fileData}/>
         </div>
       </div>
@@ -92,7 +126,7 @@ class S3Explorer extends Component {
 
 const FileTree = (props) => {
   const { fileData, onFileClick } = props;
-  console.log("In file tree", fileData);
+
   if (fileData.view && fileData.view === 'collapsed') {
     return null;
   }
@@ -104,11 +138,10 @@ const FileTree = (props) => {
           ?
             <div
               key={index+thisFile}
-              onClick={() => onFileClick(thisFile)} > 
+              onClick={(e) => onFileClick(thisFile, e)} > 
               {thisFile}
               {
-                (console.log('p ', fileData),
-                fileData[thisFile] ? <FileTree fileData={fileData[thisFile]} /> : null)
+                fileData[thisFile] ? <FileTree fileData={fileData[thisFile]} onFileClick={onFileClick}/> : null
               }
             </div>
           : 
@@ -118,17 +151,6 @@ const FileTree = (props) => {
     </div>
   );
 }
-
-// const CollapsedView = (props) => {
-//   const { viewData } = props;
-//   return (
-//     <div>
-//       <ul>
-//         <li>{viewData}</li>
-//       </ul>
-//     </div>
-//   );
-// } 
 
 FileTree.prototype = {
   fileData: React.PropTypes.array
