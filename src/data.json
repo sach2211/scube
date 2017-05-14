@@ -1,0 +1,26 @@
+{
+  "data": [
+    {
+      "name": "Folder1",
+      "subFolders": [
+        {
+          "name": "Sub1"
+        },
+        {
+          "name": "Sub2"
+        }
+      ]
+    },
+    {
+      "name": "Folder1",
+      "subFolders": [
+        {
+          "name": "Sub1"
+        },
+        {
+          "name": "Sub2"
+        }
+      ]
+    }
+  ]
+}
