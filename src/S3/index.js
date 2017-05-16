@@ -37,6 +37,7 @@ class S3Explorer extends Component {
         self.setState({
             isLoading: false,
             isErrored: true,
+            rawData: result.ListBucketResult.Contents,
             fileData: self.preprocessStateData(result.ListBucketResult.Contents)
           });
       })
@@ -49,9 +50,12 @@ class S3Explorer extends Component {
   preprocessStateData(data) {
     // const fileHierarchy = {};
     const splitArr = data.map((thisData) => {
-        return thisData.Key[0].split('/').slice(0, thisData.Key[0].split('/').length-1);
+        let splitPath = thisData.Key[0].split('/');
+        if (!splitPath[splitPath.length - 1])
+          splitPath = splitPath.slice(0, splitPath.length-1);
+        return splitPath;
     })
-
+    console.log("after split", splitArr);
     const fileHierarchy = {};
     splitArr.map((thisPath) => {
       var current = fileHierarchy;
@@ -67,9 +71,44 @@ class S3Explorer extends Component {
 
     return fileHierarchy;
   }
-  
+  getCompletePath(key) {
+    const data = this.state.rawData || [];
+    const splitArr = data.map((thisData) => {
+      let splitPath = thisData.Key[0].split('/');
+      if (!splitPath[splitPath.length - 1])
+        splitPath = splitPath.slice(0, splitPath.length-1);
+      return splitPath;
+    });
+
+    const path = splitArr.find((thisPath) => {
+      if (thisPath[thisPath.length - 1] === key)
+        return true;
+      return false;
+    })
+    
+    console.log('Found ', key, ' in ', path);
+    const consolidatedPath =  path.reduce((acc, val) => {
+      return acc + '/' + val;
+    })
+    console.log('Found ', key, ' in ', consolidatedPath);
+    return consolidatedPath;
+  }
   loadCurrentFile(objectName) {
     console.log('Construct path and fetch ', objectName);
+    const path = this.getCompletePath(objectName)
+    var self = this;
+    request
+    .get('https://s3.amazonaws.com/choprasachin.samplebucket1/' + path)
+    .then(resp => {
+      console.log("File => ", resp);
+      self.setState({
+        currentFile: resp.text
+      });
+    })
+    .catch(err => {
+      console.log('Error in fetching file');
+    })
+
   }
 
   toggleState(obj, key) {
@@ -106,7 +145,7 @@ class S3Explorer extends Component {
 
   fileClickHandler(i, e) {
     e.stopPropagation();
-    // console.log('Click Detected', i, Object.keys(e));
+    // console.log('Click Detected', i);
     let updatedState = this.state.fileData;
 
     this.searchAndUpdate(updatedState, i);
