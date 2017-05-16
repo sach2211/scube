@@ -15,7 +15,7 @@ class S3Explorer extends Component {
       isLoading: true,
       isErrored: false,
       fileData:[],
-      currentFile: 'Hello !'
+      currentFile: ''
     }
   }
 
@@ -95,19 +95,23 @@ class S3Explorer extends Component {
   }
   loadCurrentFile(objectName) {
     console.log('Construct path and fetch ', objectName);
-    const path = this.getCompletePath(objectName)
+    let path = this.getCompletePath(objectName)
     var self = this;
-    request
-    .get('https://s3.amazonaws.com/choprasachin.samplebucket1/' + path)
-    .then(resp => {
-      console.log("File => ", resp);
+    path = 'https://s3.amazonaws.com/choprasachin.samplebucket1/' + path;
+    // request
+    // .get('https://s3.amazonaws.com/choprasachin.samplebucket1/' + path)
+    // .then(resp => {
+    //   console.log("File => ", resp);
+    //   self.setState({
+    //     currentFile: resp.text
+    //   });
+    // })
+    // .catch(err => {
+    //   console.log('Error in fetching file');
+    // })
       self.setState({
-        currentFile: resp.text
+        currentFile: path
       });
-    })
-    .catch(err => {
-      console.log('Error in fetching file');
-    })
 
   }
 
@@ -208,11 +212,18 @@ FileTree.prototype = {
 
 const FileViewArea = (props) => {
 
-  return (
+  let page = (
     <div> 
-      {props.content}
+        {props.content}
     </div>
   )
 
+  if (props.content) {
+    page = <iframe className="file-iframe-wrapper" src={props.content} />
+  }
+  return page;
 }
 export default S3Explorer;
+    // <div> 
+    //   {props.content}
+    // </div>
