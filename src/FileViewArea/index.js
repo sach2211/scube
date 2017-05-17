@@ -18,7 +18,7 @@ class FileViewArea extends Component {
       .get(nextProps.filePath)
       .end( (err, resp) => {
         if (!err) {
-          console.log(" Thsi i not error", resp);
+          // console.log(" Thsi i not error", resp);
           self.setState({
             showFileContent: true
           });

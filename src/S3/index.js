@@ -150,7 +150,7 @@ class S3Explorer extends Component {
   }
 
   render() {
-    console.log('File Data', this.state.fileData);
+    // console.log('File Data', this.state.fileData);
     return (
       <div>
         <div className='file-tree-wrapper'>
