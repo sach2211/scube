@@ -1,6 +1,7 @@
 {
   "name": "scube",
   "version": "0.1.0",
+  "homepage": "https://sach2211.github.io/scube",
   "private": true,
   "dependencies": {
     "react": "^15.5.4",
@@ -9,7 +10,9 @@
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
-    "react-scripts": "0.9.5"
+    "gh-pages": "^1.0.0",
+    "react-scripts": "0.9.5",
+    "deploy": "gh-pages -d build"
   },
   "scripts": {
     "start": "react-scripts start",
