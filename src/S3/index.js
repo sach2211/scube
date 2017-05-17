@@ -23,7 +23,7 @@ class S3Explorer extends Component {
   componentDidMount() {
     var self = this;
     request
-    .get('http://choprasachin.samplebucket1.s3.amazonaws.com/')
+    .get('https://choprasachin.samplebucket1.s3.amazonaws.com/')
     .then(res => {
       parseString(res.text, function(error, result){
         if (error) {
