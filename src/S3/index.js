@@ -5,7 +5,7 @@ import { parseString } from 'xml2js';
 import request from 'superagent';
 import rightArr from '../../right-full.png';
 import downArr from '../../down-full.png';
-
+import FileViewArea from '../FileViewArea';
 
 class S3Explorer extends Component {
 
@@ -15,7 +15,8 @@ class S3Explorer extends Component {
       isLoading: true,
       isErrored: false,
       fileData:[],
-      currentFile: ''
+      currentFilePath: '',
+      showFileContent : false
     }
   }
 
@@ -26,14 +27,14 @@ class S3Explorer extends Component {
     .then(res => {
       parseString(res.text, function(error, result){
         if (error) {
-          console.error('Failed in parsing the result');
+          // console.error('Failed in parsing the result');
           this.setState({
             isLoading: false,
             isErrored: true
           });
           return;
         }
-        console.log('Successfully fetched the data ', result.ListBucketResult.Contents);
+        // console.log('Successfully fetched the data ', result.ListBucketResult.Contents);
         self.setState({
             isLoading: false,
             isErrored: true,
@@ -43,7 +44,7 @@ class S3Explorer extends Component {
       })
     })
     .catch(err => {
-      console.log('Error : In S3 Api fetch ', err);
+      // console.log('Error : In S3 Api fetch ', err);
     })
   }
   
@@ -55,7 +56,7 @@ class S3Explorer extends Component {
           splitPath = splitPath.slice(0, splitPath.length-1);
         return splitPath;
     })
-    console.log("after split", splitArr);
+
     const fileHierarchy = {};
     splitArr.map((thisPath) => {
       var current = fileHierarchy;
@@ -67,7 +68,7 @@ class S3Explorer extends Component {
         current = current[thisPath[i]];
       }
     })
-    console.log("File Paths", fileHierarchy);
+
 
     return fileHierarchy;
   }
@@ -86,31 +87,20 @@ class S3Explorer extends Component {
       return false;
     })
     
-    console.log('Found ', key, ' in ', path);
+
     const consolidatedPath =  path.reduce((acc, val) => {
       return acc + '/' + val;
     })
-    console.log('Found ', key, ' in ', consolidatedPath);
+
     return consolidatedPath;
   }
   loadCurrentFile(objectName) {
-    console.log('Construct path and fetch ', objectName);
+
     let path = this.getCompletePath(objectName)
     var self = this;
     path = 'https://s3.amazonaws.com/choprasachin.samplebucket1/' + path;
-    // request
-    // .get('https://s3.amazonaws.com/choprasachin.samplebucket1/' + path)
-    // .then(resp => {
-    //   console.log("File => ", resp);
-    //   self.setState({
-    //     currentFile: resp.text
-    //   });
-    // })
-    // .catch(err => {
-    //   console.log('Error in fetching file');
-    // })
       self.setState({
-        currentFile: path
+        currentFilePath: path
       });
 
   }
@@ -149,7 +139,7 @@ class S3Explorer extends Component {
 
   fileClickHandler(i, e) {
     e.stopPropagation();
-    // console.log('Click Detected', i);
+
     let updatedState = this.state.fileData;
 
     this.searchAndUpdate(updatedState, i);
@@ -169,7 +159,7 @@ class S3Explorer extends Component {
             fileData={this.state.fileData}/>
         </div>
         <div className='file-view-wrapper'>
-          <FileViewArea content={this.state.currentFile}/>
+          <FileViewArea filePath={this.state.currentFilePath}/>
         </div>
       </div>
     );
@@ -193,7 +183,7 @@ const FileTree = (props) => {
               key={index+thisFile}
               onClick={(e) => onFileClick(thisFile, e)} > 
                 <img src={fileData[thisFile].view == 'collapsed' ? rightArr : downArr} className="right-arrows" />
-                {thisFile}
+                {thisFile} 
               {
                 fileData[thisFile] ? <FileTree fileData={fileData[thisFile]} onFileClick={onFileClick}/> : null
               }
@@ -210,20 +200,4 @@ FileTree.prototype = {
   fileData: React.PropTypes.array
 }
 
-const FileViewArea = (props) => {
-
-  let page = (
-    <div> 
-        {props.content}
-    </div>
-  )
-
-  if (props.content) {
-    page = <iframe className="file-iframe-wrapper" src={props.content} />
-  }
-  return page;
-}
 export default S3Explorer;
-    // <div> 
-    //   {props.content}
-    // </div>
