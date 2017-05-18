@@ -16,7 +16,7 @@ class App extends Component {
         <Router history={browserHistory}>
           <div>
             <Switch>
-              <Route path='/scube/:buckName' component = {S3Explorer} />
+              <Route path='/:buckName' component = {S3Explorer} />
               <Route path='/scube/' component = {NameForm} />
             </Switch>
           </div>
