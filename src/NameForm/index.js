@@ -26,7 +26,7 @@ class NameForm extends Component {
         <h2> Hello ! </h2>
         <form onSubmit={this.formSubmitHandler}>
             Bucket name <input name="buckName" size="60" onChange={this.handleChange}  value={this.state.value} />
-            <Link to={"/scube/"+ this.state.value}> Go </Link>
+            <Link to={"/scube/bn/"+ this.state.value}> Go </Link>
         </form>
       </div>
     );
