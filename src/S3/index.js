@@ -11,9 +11,11 @@ class S3Explorer extends Component {
 
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       isLoading: true,
       isErrored: false,
+      bucketName: `https://${props.match.params.buckName}`,
       fileData:[],
       currentFilePath: '',
       showFileContent : false
@@ -23,7 +25,7 @@ class S3Explorer extends Component {
   componentDidMount() {
     var self = this;
     request
-    .get('https://choprasachin.samplebucket1.s3.amazonaws.com/')
+    .get(this.state.bucketName)
     .then(res => {
       parseString(res.text, function(error, result){
         if (error) {
@@ -98,7 +100,7 @@ class S3Explorer extends Component {
 
     let path = this.getCompletePath(objectName)
     var self = this;
-    path = 'https://s3.amazonaws.com/choprasachin.samplebucket1/' + path;
+    path = this.state.bucketName + '/' + path;
       self.setState({
         currentFilePath: path
       });
