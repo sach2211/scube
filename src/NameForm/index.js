@@ -25,8 +25,13 @@ class NameForm extends Component {
       <div className="form-styles">
         <h2> Hello ! </h2>
         <form onSubmit={this.formSubmitHandler}>
-            Bucket name <input name="buckName" size="60" onChange={this.handleChange}  value={this.state.value} />
-            <Link to={"/scube/bn/"+ this.state.value}> Go </Link>
+            S3 Bucket Link : <input
+              name="buckName"
+              size="60"
+              onChange={this.handleChange}
+              placeholder="your.bucketname.s3.amazonaws.com/"
+              value={this.state.value} />
+            <Link className="go-link" to={"/scube/bn/"+ this.state.value}> Go </Link>
         </form>
       </div>
     );
