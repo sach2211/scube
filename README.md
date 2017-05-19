@@ -2,6 +2,8 @@
 
 A web tool for viewing your public S3 data in hierarchical order.
 
+![Hello](https://s3.amazonaws.com/choprasachin.samplebucket1/FSH2/scube-record-gif.gif)
+
 Now the important question - 
 
 ## What is scube ?
